@@ -3,15 +3,21 @@ defmodule Day01 do
   Solutions for Day01 of Advent of Code 2024.
   """
 
-  def part_one(first_list, second_list) do
-    sorted_first_list = Enum.sort(first_list)
-    sorted_second_list = Enum.sort(second_list)
+  def part_one(left_list, right_list) do
+    sorted_first_list = Enum.sort(left_list)
+    sorted_right_list = Enum.sort(right_list)
 
-    pairs = List.zip([sorted_first_list, sorted_second_list])
+    List.zip([sorted_first_list, sorted_right_list])
+    |> Enum.map(fn {left, right} -> abs(left - right) end)
+    |> Enum.sum()
+  end
 
-    distances = Enum.map(pairs, fn {first, second} -> abs(first - second) end)
+  def part_two(left_list, right_list) do
+    right_list_tallies = Enum.frequencies(right_list)
 
-    Enum.sum(distances)
+    left_list
+    |> Enum.map(&(&1 * (right_list_tallies[&1] || 0)))
+    |> Enum.sum()
   end
 end
 
@@ -26,7 +32,8 @@ numerical_pairs =
     Enum.map(x, fn y -> String.to_integer(y) end)
   end)
 
-first_list = Enum.map(numerical_pairs, &List.first(&1))
-second_list = Enum.map(numerical_pairs, &List.last(&1))
+left_list = Enum.map(numerical_pairs, &List.first(&1))
+right_list = Enum.map(numerical_pairs, &List.last(&1))
 
-IO.puts("Part one: #{Day01.part_one(first_list, second_list)}")
+IO.puts("Part one: #{Day01.part_one(left_list, right_list)}")
+IO.puts("Part two: #{Day01.part_two(left_list, right_list)}")
