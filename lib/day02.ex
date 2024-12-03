@@ -4,18 +4,32 @@ defmodule Day02 do
   """
 
   def safe?(report) do
-    deltas =
-      List.zip([
-        Enum.slice(report, 0..(length(report) - 1)),
-        Enum.slice(report, 1..length(report))
-      ])
-      |> Enum.map(fn {first, second} -> first - second end)
-
+    deltas = deltas(report)
     Enum.all?(deltas, &(&1 in [1, 2, 3])) || Enum.all?(deltas, &(&1 in [-1, -2, -3]))
+  end
+
+  def almost_safe?(report) do
+    safe?(report) ||
+      Enum.any?(0..(length(report) - 1), fn skipped_index ->
+        safe?(List.delete_at(report, skipped_index))
+      end)
+  end
+
+  def deltas(report) do
+    List.zip([
+      Enum.slice(report, 0..(length(report) - 1)),
+      Enum.slice(report, 1..length(report))
+    ])
+    |> Enum.map(fn {first, second} -> first - second end)
   end
 
   def part_one(reports) do
     Enum.filter(reports, &safe?(&1))
+    |> Enum.count()
+  end
+
+  def part_two(reports) do
+    Enum.filter(reports, &almost_safe?(&1))
     |> Enum.count()
   end
 end
@@ -29,3 +43,4 @@ input =
   end)
 
 IO.puts("Part one: #{Day02.part_one(input)}")
+IO.puts("Part two: #{Day02.part_two(input)}")

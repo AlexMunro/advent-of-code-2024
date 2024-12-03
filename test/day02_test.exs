@@ -20,7 +20,20 @@ defmodule Day02Test do
     assert Day02.safe?(Enum.at(@reports, 5)) == true
   end
 
+  test "almost_safe? returns true where safe? would return true were it not for one pesky level" do
+    assert Day02.almost_safe?(Enum.at(@reports, 0)) == true
+    assert Day02.almost_safe?(Enum.at(@reports, 1)) == false
+    assert Day02.almost_safe?(Enum.at(@reports, 2)) == false
+    assert Day02.almost_safe?(Enum.at(@reports, 3)) == true
+    assert Day02.almost_safe?(Enum.at(@reports, 4)) == true
+    assert Day02.almost_safe?(Enum.at(@reports, 5)) == true
+  end
+
   test "part_one counts the number of safe reports" do
+    assert Day02.part_one(@reports) == 2
+  end
+
+  test "part_two counts the number of almost safe reports" do
     assert Day02.part_one(@reports) == 2
   end
 end
