@@ -1,24 +1,30 @@
 defmodule Day03 do
-  def uncorrupted_multiples(memory) do
-    regex = ~r/mul\((\d+),(\d+)\)/
-    matches = Regex.scan(regex, memory)
+  def part_one(memory) do
+    regex = ~r/mul\((\d\d?\d?),(\d\d?\d?)\)/
 
-    Enum.map(matches, fn [_, first, second] ->
+    Regex.scan(regex, memory)
+    |> Enum.map(fn [_, first, second] ->
       String.to_integer(first) * String.to_integer(second)
     end)
     |> Enum.sum()
   end
 
-  def part_one(input) do
-    input
-    |> Enum.map(&uncorrupted_multiples(&1))
+  def part_two(memory) do
+    part_one(memory) - disabled_multiples(memory)
+  end
+
+  defp disabled_multiples(memory) do
+    regex = ~r/don't\(\)(.*?)(?:do\(\)|$)/
+
+    Regex.scan(regex, memory)
+    |> Enum.map(fn [_, disabled_memory] -> part_one(disabled_memory) end)
     |> Enum.sum()
   end
 end
 
 input =
   File.read!("inputs/day03.txt")
-  |> String.split("\n")
-  |> Enum.reject(&(&1 == ""))
+  |> String.replace("\n", "")
 
 IO.puts("Part one: #{Day03.part_one(input)}")
+IO.puts("Part two: #{Day03.part_two(input)}")
