@@ -15,14 +15,14 @@ defmodule Day04 do
     |> Enum.sum()
   end
 
-  def transpose(word_search) do
+  defp transpose(word_search) do
     for i <- 0..((List.first(word_search) |> String.length()) - 1) do
       Enum.map(word_search, fn line -> String.at(line, i) end)
       |> Enum.join()
     end
   end
 
-  def upward_diagonal(word_search) do
+  defp upward_diagonal(word_search) do
     side_length = List.first(word_search) |> String.length()
 
     for i <- (1 - side_length)..(side_length - 1) do
@@ -33,7 +33,7 @@ defmodule Day04 do
     end
   end
 
-  def downward_diagonal(word_search) do
+  defp downward_diagonal(word_search) do
     side_length = List.first(word_search) |> String.length()
 
     for i <- (side_length - 1)..(1 - side_length) do
@@ -49,6 +49,40 @@ defmodule Day04 do
     |> Enum.map(fn line -> Regex.scan(regex, line) |> Enum.count() end)
     |> Enum.sum()
   end
+
+  # Fine, I'll ditch the regexes :( 
+  def part_two(word_search) do
+    side_length = List.first(word_search) |> String.length()
+
+    for i <- 1..(side_length - 2), j <- 1..(side_length - 2) do
+      x_mas_here?(word_search, [i, j])
+    end
+    |> Enum.count(& &1)
+  end
+
+  defp x_mas_here?(word_search, loc) do
+    [i, j] = loc
+
+    if at(word_search, loc, "A") do
+      check_locs = [[i - 1, j - 1], [i - 1, j + 1], [i + 1, j + 1], [i + 1, j - 1]]
+
+      for rotation <- 0..3 do
+        [
+          at(word_search, Enum.at(check_locs, rem(0 + rotation, 4)), "M"),
+          at(word_search, Enum.at(check_locs, rem(1 + rotation, 4)), "M"),
+          at(word_search, Enum.at(check_locs, rem(2 + rotation, 4)), "S"),
+          at(word_search, Enum.at(check_locs, rem(3 + rotation, 4)), "S")
+        ]
+        |> Enum.all?()
+      end
+      |> Enum.any?()
+    end
+  end
+
+  defp at(word_search, loc, target) do
+    [i, j] = loc
+    word_search |> Enum.at(i) |> String.at(j) == target
+  end
 end
 
 input =
@@ -57,3 +91,4 @@ input =
   |> Enum.reject(&(&1 == ""))
 
 IO.puts("Part one: #{Day04.part_one(input)}")
+IO.puts("Part two: #{Day04.part_two(input)}")
