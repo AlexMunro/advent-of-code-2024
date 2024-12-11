@@ -38,4 +38,8 @@ defmodule Day05Test do
   test "part_one sums the middle page numbers of correct updates" do
     assert Day05.part_one(@rules, @updates) == 143
   end
+
+  test "part_two sums the middle page numbers of corrected updates" do
+    assert Day05.part_two(@rules, @updates) == 123
+  end
 end
