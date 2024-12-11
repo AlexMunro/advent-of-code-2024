@@ -7,9 +7,7 @@ defmodule Day04 do
       upward_diagonal(word_search)
     ]
 
-    regexes = [~r/X[^XMAS]*M[^XMAS]*A[^XMAS]*S/, ~r/S[^XMAS]*A[^XMAS]*M[^XMAS]*X/]
-
-    for word_search <- word_searches, regex <- regexes do
+    for word_search <- word_searches, regex <- [~r/XMAS/, ~r/SAMX/] do
       match_count(word_search, regex)
     end
     |> Enum.sum()
